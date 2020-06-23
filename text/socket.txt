@@ -1,0 +1,10 @@
+
+
+fd= socket(AF_INET/AF_LOCAL, SOCK_STREAM, TCP/UDP);
+sin_family
+sun_family
+bind = (fd, address, len)
+
+listen(fd, MAX_CONN)
+
+clnt fd= accept(fd, client addr, sizeof clnt addr)

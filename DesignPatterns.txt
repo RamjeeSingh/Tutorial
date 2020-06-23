@@ -1,0 +1,18 @@
+a. Creational
+ Deals with Object instantiation.
+
+1. SingleTon : Resource Management
+2. Factory : Loose Coupling.System depends on 3rd party implementaion. Interface implemnted differently and system needs to deal with all 
+3. Builder: Builder pattern is used to instantiate complex object. we can set lot of attribs and call build to build the Object. AudioTrack.builder(set attribs, set Usage, set Transfer mode,set Performance mode, etc ) then call build where build usage all set args to instantiate/build approriate object. Bridge gap b/w actual object internals.
+
+
+
+b. Structural
+
+
+Adapter : Wrap glue two non compliant class/interface. Use Adapter class/Interface to glue underlying huge codebase(example legacy development)
+Composite : Partitioning object. Follows till has a/composed of  relationship
+Aggregate : Paritioning object. Shares other concrete classes.
+Proxy : Spawning Stubbing big system interface for limted client interaction. Like Manager/Service classes Interacts with underlying Native/HAL Process and part of it is exposed to proxy objects.
+        Bp and Bn examples in binders.
+

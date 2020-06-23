@@ -28,7 +28,7 @@ enum state {
 int count = 0;
 sem_t mutex;
 sem_t mutex_p;
-pthread_mutex_t lock;
+pthread_mutex_t mlock;
 
 void *  threadClient(void *arg) {
 		int semVal = -1;
@@ -71,9 +71,10 @@ void *  threadMClient(void *arg) {
 		int count = 0;
 		cout << "\n Enter Thread Client "<< pthread_self() << endl;
 		while (true) {
-			pthread_mutex_lock(&lock);
+			pthread_mutex_lock(&mlock);
 			cout << "Client lock acquired" << endl;
-			pthread_mutex_unlock(&lock);
+			sleep(1);
+			pthread_mutex_unlock(&mlock);
 		}
 		return NULL;
 }
@@ -82,9 +83,10 @@ void *  threadMServer(void *arg) {
 		int count = 0;
 		cout << "\n Enter Thread Server "<< pthread_self() << endl;
 		while(true) {
-			pthread_mutex_lock(&lock);
+			pthread_mutex_lock(&mlock);
 			cout << "Server  lock acquired" << endl;
-			pthread_mutex_unlock(&lock);
+			sleep(1);
+			pthread_mutex_unlock(&mlock);
 		}
 
 		return NULL;
@@ -92,22 +94,22 @@ void *  threadMServer(void *arg) {
 void threadMutex(){
 	pthread_t t1, t2, t3, t4;
 	int *retval1, *retval2, *retval3, *retval4;
-	if (pthread_mutex_init(&lock, NULL) < 0){
+	if (pthread_mutex_init(&mlock, NULL) < 0){
 		cout << "\n Mutex init failed \n";
 	}
-	pthread_create(&t1, NULL, threadServer, NULL);
+	pthread_create(&t1, NULL, threadMServer, NULL);
 	sleep(1);
-	pthread_create(&t2, NULL, threadServer, NULL);
+	pthread_create(&t2, NULL, threadMServer, NULL);
 	sleep(1);
-	pthread_create(&t3, NULL, threadClient, NULL);
+	pthread_create(&t3, NULL, threadMClient, NULL);
 	sleep(1);
-	pthread_create(&t4, NULL, threadClient, NULL);
+	pthread_create(&t4, NULL, threadMClient, NULL);
 	sleep(1);
 	pthread_join(t1, (void **)&retval1);
 	pthread_join(t2, (void **)&retval2);
 	pthread_join(t3, (void **)&retval3);
 	pthread_join(t4, (void **)&retval4);
-	pthread_mutex_destroy(&lock);
+	pthread_mutex_destroy(&mlock);
 }
 
 void threadSem(){

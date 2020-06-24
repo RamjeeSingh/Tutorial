@@ -30,6 +30,68 @@ sem_t mutex;
 sem_t mutex_p;
 pthread_mutex_t mlock;
 
+
+void *  threadMClient(void *arg) {
+		int count = 0;
+		cout << "\n Enter Thread Client "<< pthread_self() << endl;
+		while (true) {
+			pthread_mutex_lock(&mlock);
+			cout << "Client lock acquired" << endl;
+			sleep(1);
+			pthread_mutex_unlock(&mlock);
+		}
+		return NULL;
+}
+
+void *  threadMServer(void *arg) {
+		int count = 0;
+		cout << "\n Enter Thread Server "<< pthread_self() << endl;
+		while(true) {
+			pthread_mutex_lock(&mlock);
+			cout << "Server  lock acquired" << endl;
+			sleep(1);
+			pthread_mutex_unlock(&mlock);
+		}
+
+		return NULL;
+}
+void threadMutex(){
+	pthread_t t1, t2, t3, t4;
+	pthread_attr_t attr;
+	int size;
+
+	pthread_attr_init(&attr);
+
+
+	pthread_attr_getstacksize(&attr, (size_t *)&size);
+	cout << "\n Ramjee Stack Size default is  " << size <<endl;
+	pthread_attr_setstacksize(&attr, 1024*512);
+	pthread_attr_getstacksize(&attr, (size_t *)&size);
+	cout << "\n Ramjee Stack Size is  " << size <<endl;
+
+	int *retval1, *retval2, *retval3, *retval4;
+	if (pthread_mutex_init(&mlock, NULL) < 0){
+		cout << "\n Mutex init failed \n";
+	}
+	pthread_create(&t1, &attr, threadMServer, NULL);
+	sleep(1);
+	pthread_create(&t2, &attr, threadMServer, NULL);
+	sleep(1);
+	pthread_create(&t3, &attr, threadMClient, NULL);
+	sleep(1);
+	pthread_create(&t4, &attr, threadMClient, NULL);
+	sleep(1);
+    pthread_setname_np(t1, "TestThread1");
+    pthread_setname_np(t2, "TestThread2");
+    pthread_setname_np(t3, "TestThread3");
+    pthread_setname_np(t4, "TestThread4");
+	pthread_join(t1, (void **)&retval1);
+	pthread_join(t2, (void **)&retval2);
+	pthread_join(t3, (void **)&retval3);
+	pthread_join(t4, (void **)&retval4);
+	pthread_mutex_destroy(&mlock);
+}
+
 void *  threadClient(void *arg) {
 		int semVal = -1;
 		int count = 0;
@@ -66,51 +128,6 @@ void *  threadServer(void *arg) {
 		return NULL;
 }
 
-
-void *  threadMClient(void *arg) {
-		int count = 0;
-		cout << "\n Enter Thread Client "<< pthread_self() << endl;
-		while (true) {
-			pthread_mutex_lock(&mlock);
-			cout << "Client lock acquired" << endl;
-			sleep(1);
-			pthread_mutex_unlock(&mlock);
-		}
-		return NULL;
-}
-
-void *  threadMServer(void *arg) {
-		int count = 0;
-		cout << "\n Enter Thread Server "<< pthread_self() << endl;
-		while(true) {
-			pthread_mutex_lock(&mlock);
-			cout << "Server  lock acquired" << endl;
-			sleep(1);
-			pthread_mutex_unlock(&mlock);
-		}
-
-		return NULL;
-}
-void threadMutex(){
-	pthread_t t1, t2, t3, t4;
-	int *retval1, *retval2, *retval3, *retval4;
-	if (pthread_mutex_init(&mlock, NULL) < 0){
-		cout << "\n Mutex init failed \n";
-	}
-	pthread_create(&t1, NULL, threadMServer, NULL);
-	sleep(1);
-	pthread_create(&t2, NULL, threadMServer, NULL);
-	sleep(1);
-	pthread_create(&t3, NULL, threadMClient, NULL);
-	sleep(1);
-	pthread_create(&t4, NULL, threadMClient, NULL);
-	sleep(1);
-	pthread_join(t1, (void **)&retval1);
-	pthread_join(t2, (void **)&retval2);
-	pthread_join(t3, (void **)&retval3);
-	pthread_join(t4, (void **)&retval4);
-	pthread_mutex_destroy(&mlock);
-}
 
 void threadSem(){
 	pthread_t t1, t2, t3, t4;
@@ -186,8 +203,9 @@ void processSem(){
 	sem_destroy(&mutex_p);
 }
 
-int main(){
+int main(int argc, char** argv){
 //	processSem();
 //	threadSem();
+	argv[0]="TestProcessName";
 	threadMutex();
 }

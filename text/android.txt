@@ -1,0 +1,6 @@
+ion_handle = open("/dev/ion", O_RDONLY | O_DSYNC); Same as ptok for shared memory key
+ioctl(ion_handle, ION_IOC_ALLOC, alloc_data); Same as shmget for shared memory
+struct ion_fd_data		fd_data; //This is local address space
+ioctl(ion_handle, ION_IOC_SHARE, &fd_data); //Map ipn handle to process address space
+
+
